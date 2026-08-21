@@ -1,0 +1,8 @@
+{
+  "name": "AI Data Center Portfolio (Post)",
+  "description": "SPA for AI Physical Layer for Data Center Stock Portfolio. ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
