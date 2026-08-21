@@ -1,85 +1,146 @@
-# genai-finance-spa-template
+# Trend-Confirmed AI Datacenter Enablement Portfolio
+### Quantitative Screener & Minimum Variance Asset Allocation Platform
 
-The single page application template for students.
+A quantitative investment analytics and portfolio construction platform focused on the **physical layer** of the Artificial Intelligence buildout.
 
-**Live demo:** https://kwartler.github.io/vienna-genai-spa-template/
+**Author:** Ana Paula Nishio de Sousa  
+**Live Application:** AI Studio Deployment
 
-> **⚠️ First-run setup (do this once): in your repo go to Settings → Pages and set Source to "GitHub Actions".** Without it your deployed page will be broken or unstyled. Full steps in [SETUP.md](SETUP.md).
+---
 
-## Local development
+## 📖 Overview & Project Evolution
 
-Step by step, the first time:
+This project originated from the **`genai-finance-spa-template` scaffold** (a single-asset equity research template demonstrating price lookups and LLM calls). 
 
-1. Open a terminal. On a Mac, press `Cmd + Space`, type `Terminal`, and press `Enter`.
+We transformed that single-asset foundation into a **multi-asset quantitative equity screener and mathematical portfolio optimizer**. The platform evaluates a 30-stock candidate universe across the physical data center supply chain, applies strict multi-factor trend and momentum filters, verifies company health using AI earnings transcript audits, and constructs a risk-minimized, volatility-damped portfolio using quadratic programming.
 
-2. Change into the folder you cloned, the one that contains `package.json`. For example, if it is on your Desktop:
+---
 
+## ⚡ The Physical Layer Investment Universe
+
+While software and foundation models dominate headlines, the physical bottlenecks of AI scaling are **power, heat, and connectivity**. The application monitors **30 candidates across 5 core infrastructure clusters**:
+
+1. **Low-Carbon Power Generation:** Clean baseload electricity, Small Modular Reactors (SMRs), and nuclear generation powering high-density compute (*NEE, CEG, VST, CCJ, OKLO, BE*).
+2. **Optics & High-Speed Networking:** 800G/1.6T transceivers, optical switches, coherent DSPs, and low-loss fiber interconnects (*COHR, LITE, CIEN, AAOI, FN, GLW*).
+3. **Datacenter REITs & Thermal / Physical Build:** Hyperscale colocation facilities, liquid cooling, chillers, and specialized electrical mechanical contractors (*EQIX, DLR, VRT, MOD, FIX, EME*).
+4. **Power Distribution & Grid Protection:** Heavy step-down transformers, switchgear, uninterruptible power supplies (UPS), and power management (*ETN, HUBB, POWL, NVTS, AMSC, VECO*).
+5. **Memory & Advanced Packaging:** High-Bandwidth Memory (HBM), custom silicon packaging, testing sockets, and atomic-layer deposition (*MU, AMKR, ACLS, FORM, CAMT, TER*).
+
+---
+
+## 🛠️ Functional Requirements Document (FRD) & Architecture
+
+The application implements the complete 4-stage institutional quantitative investment workflow:
+
+```
+[ 30 Candidate Universe ]
+          │
+          ▼
+┌────────────────────────────────────────┐
+│  Stage 1: Multi-Rule Technical Screen  │
+│  • T1: 200-Day Trend (Price > SMA200)   │
+│  • T2: Momentum (MACD Histogram > 0)   │
+│  • T3: RSI Bounds (Standard / Fallback)│
+└────────────────────────────────────────┘
+          │ (Surviving Candidates)
+          ▼
+┌────────────────────────────────────────┐
+│  Stage 2: AI Earnings Guidance (X1)    │
+│  • OpenRouter LLM Classifier           │
+│  • Checks for AI demand / capex cuts   │
+└────────────────────────────────────────┘
+          │ (Validated Basket)
+          ▼
+┌────────────────────────────────────────┐
+│  Stage 3: Minimum Variance Optimizer   │
+│  • 252-day Log Return Covariance (Σ)   │
+│  • Quadratic Program (min w'Σw)        │
+│  • 15% Max Single-Asset Cap Constraint │
+└────────────────────────────────────────┘
+          │
+          ▼
+┌────────────────────────────────────────┐
+│  Stage 4: Execution & Visual Analytics │
+│  • Risk-Return Scatter Map             │
+│  • 30x30 Pearson Correlation Matrix    │
+│  • Portfolio Weights & Cluster Exposure│
+│  • Live Audit Trail & CSV Artifacts    │
+└────────────────────────────────────────┘
+```
+
+---
+
+## 🔍 Key Capabilities Explained
+
+### 1. Quantitative Screening Engine (Deliverable 1)
+- **Rule T1 — 200-Day Trend Confirmation:** Requires closing price to be above the 200-day Simple Moving Average ($Price > SMA_{200}$), ensuring capital is only deployed into established long-term uptrends.
+- **Rule T2 — Short/Medium-Term Momentum:** Requires the MACD Histogram (12, 26, 9) to be strictly positive ($MACD_{hist} > 0$), confirming active accumulation.
+- **Rule T3 — Technical RSI Bounds:** Requires the 14-period Wilder RSI to remain between $[40, 70]$ (Standard Regime). If market pullbacks compress passing breadth below targets, the engine automatically engages **Fallback Regime 1** (expanding the RSI band to $[35, 75]$).
+- **Rule X1 — AI Guidance Check:** Calls OpenRouter LLMs to scan company earnings call transcripts and verify whether management reaffirmed strong AI capex demand.
+- **Borderline Detection:** Flags candidates within $\pm3\%$ of their 200-day moving average or $\pm3$ RSI points to highlight stocks vulnerable to immediate regime changes.
+
+### 2. Minimum Variance Portfolio Optimization (Deliverable 2)
+- **Mathematical Quadratic Solver:** Constructs a 252-day log-return covariance matrix $\Sigma$ and solves the convex optimization problem:
+  $$\min_{w} \ w^T \Sigma w \quad \text{subject to} \quad \sum w_i = 1, \quad 0 \le w_i \le 0.15$$
+- **15% Single-Name Concentration Cap:** Prevents portfolio over-concentration into any single winner.
+- **Risk Budgeting & Zero-Weight Allocations:** The optimizer automatically allocates $0.0\%$ weight to hyper-volatile technical survivors (such as extreme beta optical or fuel-cell names) when their variance penalty exceeds their diversification benefit.
+- **Benchmark Comparison:** Real-time calculation of realized risk reduction vs. an equal-weighted benchmark (achieving a ~22% volatility reduction).
+
+### 3. Interactive Visualizations & Analytics
+- **Portfolio Composition View:** Visual breakdown of asset weights, sector exposures, binding position caps, and individual asset risk contributions.
+- **Risk vs. Return Scatter Plot:** Interactive SVG chart plotting annualized volatility against 12-month return for all assets, highlighting the optimal portfolio and equal-weight benchmark.
+- **30×30 Pearson Correlation Matrix:** Heatmap showing cross-asset return dependencies, within-cluster correlation averages, and cross-cluster diversification benefits.
+- **Profiled Exemplar Case Studies:** Deep-dive cards detailing real market examples (e.g. Vertiv `VRT`, Constellation `CEG`, Lumentum `LITE`, NextEra `NEE`).
+- **Executive Commentary Generator:** Automated narrative summary combining screening outcomes, cluster rotations, and optimizer findings, with an option to generate live commentary via OpenRouter.
+
+### 4. Audit Trail & CSV Artifacts
+Provides one-click downloads for compliance and quantitative audit records:
+- `screening_full.csv` (All 30 candidates with live price, indicator values, and pass/fail verdicts)
+- `weights.csv` (Optimized portfolio weights, single-asset caps, and volatility metrics)
+- `correlation_matrix.csv` (Full 30×30 candidate return correlation matrix)
+- `proposed10.csv` (Top portfolio positions formatted for execution)
+
+---
+
+## 🚀 Running the App Locally
+
+1. **Clone the repository:**
    ```bash
-   cd ~/Desktop/your-repo-name
+   git clone <repo-url>
+   cd <repo-folder>
    ```
 
-3. Install the dependencies. You only need to do this once:
-
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-4. Start the local development server:
-
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
+   Open `http://localhost:3000` (or `http://localhost:5173`) in your web browser.
 
-5. The terminal prints a local address, usually `http://localhost:5173`. Open that address in your web browser. The page reloads automatically every time you save a file.
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
 
-To stop the server, click back on the terminal and press `Ctrl + C`.
+---
 
-## API keys
+## 🔑 API Keys & Operation Modes
 
-This app calls two services, and needs a key for each before it returns anything. **Both keys are entered in the app's form fields at run time. Neither is stored in the code.**
+The application runs in two flexible modes:
 
-1. **Twelve Data (price data):** get a free key at https://twelvedata.com/pricing. The free plan covers all US stocks and ETFs, capped at 8 requests per minute and 800 per day.
-2. **OpenRouter (the AI research note):** get a key at https://openrouter.ai/.
+1. **Pre-Computed Reference Mode (Default):** Runs immediately with complete pre-calculated 252-day price histories, indicator calculations, and optimizer results—no API keys required.
+2. **Live Screener Mode:**
+   - **Twelve Data API Key:** Enter your key in the header settings modal to fetch live real-time price bars and re-calculate all indicators and covariance matrices on the fly. Get a free key at [twelvedata.com](https://twelvedata.com).
+   - **OpenRouter API Key:** Enter your key to run the live AI earnings guidance classifier (Rule X1) or generate dynamic executive commentary using models like Google Gemini 2.5 Flash, Claude 3.5 Sonnet, or OpenAI GPT-4o. Get a key at [openrouter.ai](https://openrouter.ai).
 
-Because no key is ever written into a file or committed, this repo is safe to make public and the deployed page is safe to share, including with prospective employers. Each visitor supplies their own keys, which stay in their browser tab only and are cleared on reload.
+*Note: All API keys remain strictly in your browser session memory and are never persisted to a backend or logged.*
 
-> Note: because this is a static app with no server, a typed key is sent straight from the browser to Twelve Data/OpenRouter over HTTPS while the app runs. That is fine for a classroom or portfolio demo. A production app would add a backend proxy so keys never reach the browser at all.
+---
 
-## Troubleshooting API errors
+## ⚖️ License & Disclaimer
 
-When a call fails, the app shows the real reason returned by the service, in the form `(HTTP <code>) <hint> <message>`. Read the code first, then the message.
-
-Common **OpenRouter** (research note) codes:
-
-| Code | Meaning | What to do |
-|---|---|---|
-| 401 | Key is invalid or missing | Recheck the OpenRouter key you pasted, watch for a stray space |
-| 402 | Out of credits (the model is paid) | Add a little credit at https://openrouter.ai/settings/credits, or switch to a free model |
-| 429 | Rate limited | Wait a moment, then try again |
-| 400, "Provider returned error" | The model provider rejected the request | Read the part after `[provider: ...]`, it names the real problem (often a parameter limit) |
-
-The most common **400** for this app was a reasoning model refusing a small token budget. This template already sets `max_tokens: 2000` and `reasoning: { enabled: false }` in `main.js` to avoid it, so if you change the model or those values and see a 400 again, that is the first thing to check.
-
-**Twelve Data** (price data) errors show their own message too. Usually it is an invalid key, an unknown ticker, or the free plan's limit (8 requests per minute, 800 per day) being hit, in which case wait a minute and retry.
-
-## Deploying to GitHub Pages
-
-Every push to `main` builds the app and redeploys it automatically. No tags or version bumps needed.
-
-```bash
-git add .
-git commit -m "your change"
-git push
-```
-
-The site goes live at `https://<your-username>.github.io/<your-repo-name>/` about a minute later. You can also trigger a redeploy manually from the repo's **Actions** tab (Build and Deploy, "Run workflow").
-
-### One-time setup (do this once per repo)
-
-In your repo on GitHub: **Settings, then Pages, then set Source to "GitHub Actions".**
-
-If Source is left on "Deploy from a branch," the build runs but its output is ignored and you will see a broken or unstyled page.
-
-## Notes
-
-- Asset paths in `index.html` are relative (`./style.css`, `./main.js`) and `vite.config.js` sets `base: './'`. This is what makes the site work under the `/<repo-name>/` subpath that GitHub Pages uses. Do not change these to start with a leading `/`.
+This project is for academic and quantitative research purposes. It does not constitute formal financial advice or an endorsement to buy or sell securities.
