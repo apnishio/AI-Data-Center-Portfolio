@@ -153,8 +153,6 @@ export default function App() {
 
   // Run Live Screening Pipeline across Twelve Data & Optimizer
   const handleRunLiveScreening = async () => {
-    if (!twelveDataKey) return;
-
     setIsFetching(true);
     setIsLive(true);
     const today = new Date().toISOString().split('T')[0];
@@ -506,6 +504,11 @@ export default function App() {
         onClose={() => setIsScreenerModalOpen(false)}
         results={screeningResults}
         asOfDate={asOfDate}
+        isLive={isLive}
+        isFetching={isFetching}
+        fetchProgress={fetchProgress}
+        onRunLiveScreening={handleRunLiveScreening}
+        onResetToSnapshot={handleResetToSnapshot}
       />
 
       <PortfolioCompositionModal

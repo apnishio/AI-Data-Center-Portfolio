@@ -13,23 +13,37 @@ import {
   XCircle,
   Download,
   Copy,
-  Info
+  Info,
+  RefreshCw,
+  Activity,
+  History
 } from 'lucide-react';
 import { ScreeningResult, ClusterName } from '../types';
 import { TermInfoButton } from './TermExplainer';
+import { FetchProgress } from '../lib/twelveData';
 
 interface CandidateScreenerModalProps {
   isOpen: boolean;
   onClose: () => void;
   results: ScreeningResult[];
   asOfDate: string;
+  isLive?: boolean;
+  isFetching?: boolean;
+  fetchProgress?: FetchProgress | null;
+  onRunLiveScreening?: () => void;
+  onResetToSnapshot?: () => void;
 }
 
 export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
   isOpen,
   onClose,
   results,
-  asOfDate
+  asOfDate,
+  isLive = false,
+  isFetching = false,
+  fetchProgress = null,
+  onRunLiveScreening,
+  onResetToSnapshot
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCluster, setSelectedCluster] = useState<string>('ALL');
@@ -111,7 +125,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
 
   const copyToClipboard = () => {
     const lines = [
-      `CANDIDATE SCREENING TABLE (As of ${asOfDate})`,
+      `CANDIDATE SCREENING TABLE (${isLive ? 'LIVE' : 'REFERENCE'} - As of ${asOfDate})`,
       `Total Universe: ${results.length} Stocks | Qualified: ${passCount} | Failed: ${failCount} | Close Calls: ${borderlineCount}`,
       '',
       'Ticker | Company | Sector | Price | 200 SMA Margin | MACD | RSI | AI Review | Verdict',
@@ -127,7 +141,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Ticker', 'Company', 'Sector', 'Role', 'Price', 'SMA200', 'Trend_Margin_Pct', 'MACD_Hist', 'RSI14', 'AI_Review_Pass', 'Overall_Verdict', 'Is_Close_Call'];
+    const headers = ['Ticker', 'Company', 'Sector', 'Role', 'Price', 'SMA200', 'Trend_Margin_Pct', 'MACD_Hist', 'RSI14', 'AI_Review_Pass', 'Overall_Verdict', 'Is_Close_Call', 'As_Of'];
     const rows = results.map(r => [
       r.ticker,
       `"${r.company.replace(/"/g, '""')}"`,
@@ -140,7 +154,8 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
       r.rsi14.toFixed(2),
       r.x1_verdict === 'pass' ? 'TRUE' : 'FALSE',
       r.pass ? 'QUALIFIED' : 'FAILED',
-      r.borderline ? 'TRUE' : 'FALSE'
+      r.borderline ? 'TRUE' : 'FALSE',
+      asOfDate
     ]);
 
     const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
@@ -148,7 +163,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `candidate_screening_table_${asOfDate}.csv`);
+    link.setAttribute('download', `candidate_screening_table_${isLive ? 'live' : 'snapshot'}_${asOfDate}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -176,6 +191,19 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
                 <h2 id="candidate-screener-title" className="text-lg sm:text-xl font-bold text-white tracking-tight">
                   Candidate Screening Table (30 Stocks)
                 </h2>
+                
+                {isLive ? (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 shadow-sm shadow-cyan-900/20">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>Live Market Feed</span>
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-purple-500/15 text-purple-300 border border-purple-500/30 flex items-center gap-1.5">
+                    <History className="w-3 h-3 text-purple-400" />
+                    <span>Reference Snapshot</span>
+                  </span>
+                )}
+
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   {passCount} of {results.length} Qualified
                 </span>
@@ -187,14 +215,51 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl border border-slate-800 transition-colors"
-            title="Close pop-up (Esc)"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onRunLiveScreening && (
+              <button
+                onClick={onRunLiveScreening}
+                disabled={isFetching}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 shadow-sm ${
+                  isFetching
+                    ? 'bg-slate-800 text-slate-400 border-slate-700 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border-cyan-400/40 hover:shadow-cyan-500/25 active:scale-95'
+                }`}
+                title="Refresh candidate screening table with live price calculations"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin text-cyan-400' : ''}`} />
+                <span>{isFetching ? 'Refreshing...' : 'Live Refresh'}</span>
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl border border-slate-800 transition-colors"
+              title="Close pop-up (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
+        {/* Live Refresh Progress Bar (when active) */}
+        {isFetching && fetchProgress && (
+          <div className="bg-cyan-950/40 border-b border-cyan-500/30 p-3 text-xs text-cyan-200 flex flex-col gap-1.5 animate-in fade-in duration-150">
+            <div className="flex items-center justify-between font-mono text-[11px]">
+              <div className="flex items-center gap-2">
+                <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                <span>{fetchProgress.status}</span>
+              </div>
+              <span className="font-bold text-cyan-300">{fetchProgress.percent}%</span>
+            </div>
+            <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-cyan-500/20">
+              <div 
+                className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full transition-all duration-150"
+                style={{ width: `${fetchProgress.percent}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Top Summary Metrics Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-900/90 border-b border-slate-800 text-xs">
@@ -254,7 +319,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
             )}
           </div>
 
-          {/* Theme & Status Dropdowns */}
+          {/* Theme & Status Dropdowns + Actions */}
           <div className="flex items-center space-x-2 w-full sm:w-auto overflow-x-auto">
             
             <select
@@ -278,6 +343,18 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
               <option value="FAIL">Failed Only ({failCount})</option>
               <option value="BORDERLINE">Close Calls ({borderlineCount})</option>
             </select>
+
+            {/* Reset to snapshot button if currently live */}
+            {isLive && onResetToSnapshot && (
+              <button
+                onClick={onResetToSnapshot}
+                className="px-2.5 py-1.5 text-xs rounded-lg border border-purple-500/30 bg-purple-950/30 hover:bg-purple-900/40 text-purple-300 flex items-center gap-1 transition-colors whitespace-nowrap"
+                title="Reset screener back to Aug 20 snapshot data"
+              >
+                <History className="w-3.5 h-3.5 text-purple-400" />
+                <span>Snapshot</span>
+              </button>
+            )}
 
             {/* Copy Button */}
             <button
@@ -416,7 +493,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
                     </td>
 
                     {/* Price */}
-                    <td className="py-2.5 px-2 text-right font-mono text-slate-200">
+                    <td className="py-2.5 px-2 text-right font-mono text-slate-200 font-semibold">
                       ${item.close.toFixed(2)}
                     </td>
 

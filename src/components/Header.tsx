@@ -59,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [showTwelveKey, setShowTwelveKey] = useState(false);
   const [showOpenRouterKey, setShowOpenRouterKey] = useState(false);
 
-  const hasKeys = !!twelveDataKey && !!openRouterKey;
+  const hasKeys = !!twelveDataKey || !!openRouterKey;
 
   return (
     <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             ) : (
               <button
-                onClick={() => setShowConfig(true)}
+                onClick={() => setShowConfig(!showConfig)}
                 className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5"
                 title="Configure API keys for live market screening"
               >
@@ -140,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({
               {isFetching ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-                  <span>Screening Universe...</span>
+                  <span>Running Live Screen...</span>
                 </>
               ) : (
                 <>
