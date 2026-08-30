@@ -28,8 +28,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Ramping 400G and 800G optical lines with strong demand from Tier-1 datacenter customers.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -73,8 +71,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Accelerating cloud interconnect demand to overcome metro power constraints.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -96,8 +92,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: false,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Transceiver cycle remains healthy; two-day market pullback triggered momentum breakdown.',
     overall_status: 'FAILED_TECHNICAL',
     fail_reason: 'T2 failed (MACD histogram -0.136% is negative)',
     as_of: REFERENCE_AS_OF
@@ -142,8 +136,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Strong multi-year visibility through 2027 with major cloud hyperscalers for high-density fiber.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -165,8 +157,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'CW lasers for co-packaged optics scaling to meet cloud demand.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -256,8 +246,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: false,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Liquid cooling manifolds growing rapidly; recent momentum turned negative.',
     overall_status: 'FAILED_TECHNICAL',
     fail_reason: 'T2 failed (MACD histogram -0.096%)',
     as_of: REFERENCE_AS_OF
@@ -280,8 +268,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Raised full year operating profit outlook on high-density liquid cooling order strength.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -349,8 +335,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Active Electrical Cables displacement accelerating in hyperscaler rack interconnects.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -394,8 +378,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Significant sequential expansion in custom AI compute and optical DSP interconnects.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -419,8 +401,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Solid oxide fuel cell server deployments addressing severe grid-connection delays.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -442,8 +422,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: false,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Landmark clean power agreements signed, but price broke below 200-day SMA (-8.1%).',
     overall_status: 'FAILED_TECHNICAL',
     fail_reason: 'T1 failed (-8.1% below SMA200)',
     as_of: REFERENCE_AS_OF
@@ -488,8 +466,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: false,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Massive datacenter renewable backlog, but rate sensitivity dragged stock below 200 SMA.',
     overall_status: 'FAILED_TECHNICAL',
     fail_reason: 'T1 failed (-2.5% vs SMA200)',
     as_of: REFERENCE_AS_OF
@@ -580,8 +556,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Mechanical and electrical services for hyperscale campus builds at record margins.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -603,8 +577,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'xScale hyperscaler joint ventures and interconnections tracking ahead of plan.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -626,8 +598,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: true,
     eligible: true,
     pass: true,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Modular offsite prefabrication for datacenter mechanical rooms reaches $6.2B backlog.',
     overall_status: 'HELD',
     as_of: REFERENCE_AS_OF
   },
@@ -649,8 +619,6 @@ export const REFERENCE_SCREENING_RESULTS: ScreeningResult[] = [
     borderline: false,
     eligible: true,
     pass: false,
-    x1_verdict: 'pass',
-    x1_reasoning: 'Data center segment leasing exceeded 130 MW; momentum turned slightly negative.',
     overall_status: 'FAILED_TECHNICAL',
     fail_reason: 'T2 failed (MACD histogram -0.060%)',
     as_of: REFERENCE_AS_OF

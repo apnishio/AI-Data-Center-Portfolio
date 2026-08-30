@@ -17,11 +17,13 @@ import { TermInfoButton } from './TermExplainer';
 
 interface UniverseTableProps {
   results: ScreeningResult[];
+  isLive?: boolean;
   onSelectTicker?: (ticker: string) => void;
 }
 
 export const UniverseTable: React.FC<UniverseTableProps> = ({
   results,
+  isLive = false,
   onSelectTicker
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -355,19 +357,30 @@ export const UniverseTable: React.FC<UniverseTableProps> = ({
                     </td>
 
                     {/* X1 Text Signal */}
-                    <td className="px-3 py-3 text-center">
-                      <button
-                        onClick={() => setActiveX1Modal(item)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-sans font-medium flex items-center justify-center gap-1 mx-auto transition-colors border ${
-                          item.x1_verdict === 'fail' 
-                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/30 hover:bg-rose-500/30' 
-                            : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
-                        }`}
-                        title="View earnings call transcript guidance classification"
-                      >
-                        <FileText className="w-3 h-3 text-teal-400" />
-                        <span>{item.x1_verdict?.toUpperCase() || 'PASS'}</span>
-                      </button>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {isLive && item.x1_verdict ? (
+                        <button
+                          onClick={() => setActiveX1Modal(item)}
+                          className={`px-2 py-0.5 rounded text-[10px] font-sans font-medium inline-flex items-center justify-center gap-1 mx-auto transition-colors border ${
+                            item.x1_verdict === 'fail' 
+                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/30 hover:bg-rose-500/30' 
+                              : item.x1_verdict === 'insufficient'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30 hover:bg-amber-500/30'
+                              : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30'
+                          }`}
+                          title="Click to view earnings call transcript AI review details"
+                        >
+                          <FileText className="w-3 h-3 text-teal-400" />
+                          <span>{item.x1_verdict.toUpperCase()}</span>
+                        </button>
+                      ) : (
+                        <span 
+                          className="text-slate-500 text-[10px] uppercase font-mono tracking-wider"
+                          title="AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key"
+                        >
+                          NOT RUN
+                        </span>
+                      )}
                     </td>
 
                     {/* Final Verdict */}
@@ -389,6 +402,11 @@ export const UniverseTable: React.FC<UniverseTableProps> = ({
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Required Footnote */}
+      <div className="px-4 py-3 border-t border-slate-800/80 bg-slate-950/60 text-[11px] text-slate-400 italic">
+        * AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key; reference results reflect the technical rules only.
       </div>
 
       {/* X1 Transcript Detail Modal */}
@@ -417,8 +435,14 @@ export const UniverseTable: React.FC<UniverseTableProps> = ({
             <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between bg-slate-950 p-3 rounded-lg border border-slate-800">
                 <span className="text-slate-400">X1 Guidance Classifier Verdict:</span>
-                <span className="font-mono font-bold uppercase text-emerald-400 px-2 py-0.5 bg-emerald-500/10 rounded border border-emerald-500/20">
-                  {activeX1Modal.x1_verdict || 'PASS'}
+                <span className={`font-mono font-bold uppercase px-2 py-0.5 rounded border ${
+                  activeX1Modal.x1_verdict === 'fail' 
+                    ? 'text-rose-400 bg-rose-500/10 border-rose-500/20' 
+                    : activeX1Modal.x1_verdict === 'insufficient'
+                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                    : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                }`}>
+                  {activeX1Modal.x1_verdict?.toUpperCase() || 'NOT RUN'}
                 </span>
               </div>
 

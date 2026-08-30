@@ -131,7 +131,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
       'Ticker | Company | Sector | Price | 200 SMA Margin | MACD | RSI | AI Review | Verdict',
       '---------------------------------------------------------------------------------------',
       ...results.map(r => 
-        `${r.ticker.padEnd(5)} | ${r.company.padEnd(24)} | ${r.cluster.padEnd(30)} | $${r.close.toFixed(2).padEnd(7)} | ${r.t1_margin_pct >= 0 ? '+' : ''}${r.t1_margin_pct.toFixed(1)}% | ${r.T2 ? 'PASS' : 'FAIL'} | ${r.rsi14.toFixed(1)} | ${r.x1_verdict === 'pass' ? 'CLEAN' : 'FAIL'} | ${r.pass ? 'QUALIFIED' : 'FAILED'}`
+        `${r.ticker.padEnd(5)} | ${r.company.padEnd(24)} | ${r.cluster.padEnd(30)} | $${r.close.toFixed(2).padEnd(7)} | ${r.t1_margin_pct >= 0 ? '+' : ''}${r.t1_margin_pct.toFixed(1)}% | ${r.T2 ? 'PASS' : 'FAIL'} | ${r.rsi14.toFixed(1)} | ${(r.x1_verdict ? r.x1_verdict.toUpperCase() : 'NOT RUN').padEnd(7)} | ${r.pass ? 'QUALIFIED' : 'FAILED'}`
       )
     ];
 
@@ -141,7 +141,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Ticker', 'Company', 'Sector', 'Role', 'Price', 'SMA200', 'Trend_Margin_Pct', 'MACD_Hist', 'RSI14', 'AI_Review_Pass', 'Overall_Verdict', 'Is_Close_Call', 'As_Of'];
+    const headers = ['Ticker', 'Company', 'Sector', 'Role', 'Price', 'SMA200', 'Trend_Margin_Pct', 'MACD_Hist', 'RSI14', 'AI_Review_Verdict', 'Overall_Verdict', 'Is_Close_Call', 'As_Of'];
     const rows = results.map(r => [
       r.ticker,
       `"${r.company.replace(/"/g, '""')}"`,
@@ -152,7 +152,7 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
       r.t1_margin_pct.toFixed(2),
       r.macd_hist_norm.toFixed(4),
       r.rsi14.toFixed(2),
-      r.x1_verdict === 'pass' ? 'TRUE' : 'FALSE',
+      r.x1_verdict ? r.x1_verdict.toUpperCase() : 'NOT RUN',
       r.pass ? 'QUALIFIED' : 'FAILED',
       r.borderline ? 'TRUE' : 'FALSE',
       asOfDate
@@ -525,15 +525,30 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
                     </td>
 
                     {/* X1 (AI Review) */}
-                    <td className="py-2.5 px-2 text-center">
-                      <button
-                        onClick={() => setActiveX1Modal(item)}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/20 transition-colors"
-                        title="View earnings transcript review details"
-                      >
-                        <FileText className="w-3 h-3 text-teal-400" />
-                        <span>{item.x1_verdict === 'pass' ? 'Clean' : 'Warning'}</span>
-                      </button>
+                    <td className="py-2.5 px-2 text-center font-mono">
+                      {isLive && item.x1_verdict ? (
+                        <button
+                          onClick={() => setActiveX1Modal(item)}
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border transition-colors ${
+                            item.x1_verdict === 'fail'
+                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/30 hover:bg-rose-500/30'
+                              : item.x1_verdict === 'insufficient'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30 hover:bg-amber-500/30'
+                              : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30'
+                          }`}
+                          title="Click to view earnings transcript AI review details"
+                        >
+                          <FileText className="w-3 h-3 text-teal-400" />
+                          <span>{item.x1_verdict.toUpperCase()}</span>
+                        </button>
+                      ) : (
+                        <span 
+                          className="text-slate-500 text-[10px] uppercase font-mono tracking-wider"
+                          title="AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key"
+                        >
+                          NOT RUN
+                        </span>
+                      )}
                     </td>
 
                     {/* Overall Verdict */}
@@ -562,8 +577,8 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
         <div className="p-4 bg-slate-950/80 border-t border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Info className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-            <span>
-              All 4 technical and qualitative filters must pass simultaneously for a stock to enter portfolio weighting.
+            <span className="italic">
+              * AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key; reference results reflect the technical rules only.
             </span>
           </div>
 
@@ -603,19 +618,34 @@ export const CandidateScreenerModal: React.FC<CandidateScreenerModalProps> = ({
                 <p className="text-slate-400 text-[11px] mt-0.5">{activeX1Modal.role}</p>
               </div>
 
-              <div className="p-3 bg-teal-950/20 border border-teal-500/30 rounded-lg">
-                <span className="text-[10px] text-teal-400 block mb-1 font-semibold uppercase tracking-wider">AI Screen Verdict</span>
-                <p className="text-teal-200">
-                  {activeX1Modal.x1_pass 
-                    ? 'CLEAN: No demand deceleration, margin collapse, or customer capex pullback signals detected.'
-                    : 'FLAGGED: Negative demand commentary or significant structural headwinds detected.'}
+              <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
+                <span className="text-[10px] text-slate-400 block mb-1 font-semibold uppercase tracking-wider">AI Screen Verdict</span>
+                <span className={`font-mono font-bold uppercase px-2 py-0.5 rounded border text-xs inline-block ${
+                  activeX1Modal.x1_verdict === 'fail'
+                    ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
+                    : activeX1Modal.x1_verdict === 'insufficient'
+                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                    : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                }`}>
+                  {activeX1Modal.x1_verdict?.toUpperCase() || 'NOT RUN'}
+                </span>
+              </div>
+
+              <div>
+                <span className="font-semibold text-slate-300 block mb-1">Reasoning / Notes:</span>
+                <p className="text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed font-sans">
+                  {activeX1Modal.x1_reasoning || 'No negative forward guidance or customer demand slowdown detected.'}
                 </p>
               </div>
 
-              <div className="p-3 bg-slate-950/70 rounded-lg border border-slate-800 font-mono text-[11px] text-slate-300">
-                <span className="text-[10px] text-slate-400 block mb-1 font-sans">Verified Ground-Truth Transcript Note:</span>
-                "{activeX1Modal.company} management confirmed robust datacenter and physical infrastructure backlog with no order cancellations."
-              </div>
+              {activeX1Modal.x1_evidence && (
+                <div>
+                  <span className="font-semibold text-rose-300 block mb-1">Verbatim Evidence Quote:</span>
+                  <blockquote className="italic text-rose-200 bg-rose-950/30 p-3 rounded-lg border border-rose-500/30">
+                    "{activeX1Modal.x1_evidence}"
+                  </blockquote>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end pt-2">

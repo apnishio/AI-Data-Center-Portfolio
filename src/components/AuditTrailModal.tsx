@@ -56,7 +56,7 @@ export const AuditTrailModal: React.FC<AuditTrailModalProps> = ({
       r.T2 ? '1' : '0',
       r.T3 ? '1' : '0',
       r.borderline ? '1' : '0',
-      r.x1_verdict,
+      r.x1_verdict || 'NOT RUN',
       r.pass ? '1' : '0',
       `"${r.fail_reason}"`
     ]);

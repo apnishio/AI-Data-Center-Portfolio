@@ -13,10 +13,12 @@ import { TermInfoButton } from './TermExplainer';
 
 interface ExemplarProfilesProps {
   screeningResults?: ScreeningResult[];
+  isLive?: boolean;
 }
 
 export const ExemplarProfiles: React.FC<ExemplarProfilesProps> = ({
-  screeningResults
+  screeningResults,
+  isLive = false
 }) => {
   const resultMap = new Map<string, ScreeningResult>(
     (screeningResults || []).map(r => [r.ticker, r])
@@ -128,14 +130,26 @@ export const ExemplarProfiles: React.FC<ExemplarProfilesProps> = ({
                 <div className="flex items-center justify-between text-[11px] mb-1 font-mono">
                   <span className="text-slate-400 flex items-center gap-1 font-sans">
                     <FileText className="w-3 h-3 text-teal-400" />
-                    <span>AI Earnings Transcript Review:</span>
+                    <span>AI Earnings Transcript Review (X1):</span>
                     <TermInfoButton termId="x1_guidance" />
                   </span>
-                  <span className="text-emerald-400 font-bold uppercase">{x1Verdict}</span>
+                  <span className={`font-bold uppercase text-[10px] ${
+                    isLive && x1Verdict
+                      ? x1Verdict === 'fail' ? 'text-rose-400' : 'text-emerald-400'
+                      : 'text-slate-500'
+                  }`}>
+                    {isLive && x1Verdict ? x1Verdict.toUpperCase() : 'NOT RUN'}
+                  </span>
                 </div>
-                <blockquote className="text-[11px] text-slate-400 italic bg-slate-950 p-2 rounded border border-slate-800 line-clamp-2">
-                  "{x1Evidence}"
-                </blockquote>
+                {isLive && x1Verdict ? (
+                  <blockquote className="text-[11px] text-slate-400 italic bg-slate-950 p-2 rounded border border-slate-800 line-clamp-2">
+                    "{x1Evidence}"
+                  </blockquote>
+                ) : (
+                  <p className="text-[11px] text-slate-500 italic bg-slate-950/60 p-2 rounded border border-slate-800/60">
+                    * AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key; reference results reflect technical rules only.
+                  </p>
+                )}
               </div>
 
             </div>

@@ -4,7 +4,7 @@
 A quantitative investment analytics and portfolio construction platform focused on the **physical layer** of the Artificial Intelligence buildout.
 
 **Author:** Ana Paula Nishio de Sousa  
-**Live Application:** AI Studio Deployment
+**Live Application:** https://apnishio.github.io/AI-Data-Center-Portfolio/
 
 ---
 
@@ -20,11 +20,11 @@ We transformed that single-asset foundation into a **multi-asset quantitative eq
 
 While software and foundation models dominate headlines, the physical bottlenecks of AI scaling are **power, heat, and connectivity**. The application monitors **30 candidates across 5 core infrastructure clusters**:
 
-1. **Low-Carbon Power Generation:** Clean baseload electricity, Small Modular Reactors (SMRs), and nuclear generation powering high-density compute (*NEE, CEG, VST, CCJ, OKLO, BE*).
-2. **Optics & High-Speed Networking:** 800G/1.6T transceivers, optical switches, coherent DSPs, and low-loss fiber interconnects (*COHR, LITE, CIEN, AAOI, FN, GLW*).
-3. **Datacenter REITs & Thermal / Physical Build:** Hyperscale colocation facilities, liquid cooling, chillers, and specialized electrical mechanical contractors (*EQIX, DLR, VRT, MOD, FIX, EME*).
-4. **Power Distribution & Grid Protection:** Heavy step-down transformers, switchgear, uninterruptible power supplies (UPS), and power management (*ETN, HUBB, POWL, NVTS, AMSC, VECO*).
-5. **Memory & Advanced Packaging:** High-Bandwidth Memory (HBM), custom silicon packaging, testing sockets, and atomic-layer deposition (*MU, AMKR, ACLS, FORM, CAMT, TER*).
+1. Optics & Networking: GLW (Corning), COHR (Coherent), LITE (Lumentum), ANET (Arista Networks), CIEN (Ciena), FN (Fabrinet), AAOI (Applied Optoelectronics)
+2. Electrical & Power Mgmt: ETN (Eaton), VRT (Vertiv), NVT (nVent Electric), HUBB (Hubbell), GEV (GE Vernova)
+3. Semiconductors (non-GPU): AVGO (Broadcom), MRVL (Marvell), MPWR (Monolithic Power Systems), ALAB (Astera Labs), CRDO (Credo Technology)
+4. Power Generation (low-carbon): NEE (NextEra), CEG (Constellation Energy), VST (Vistra), BE (Bloom Energy), FSLR (First Solar), TLN (Talen Energy)
+5. Datacenter REITs & Thermal/Build: EQIX (Equinix), DLR (Digital Realty), FIX (Comfort Systems USA), TT (Trane Technologies), MOD (Modine), IRM (Iron Mountain), EME (EMCOR Group)
 
 ---
 
@@ -45,9 +45,9 @@ The application implements the complete 4-stage institutional quantitative inves
           │ (Surviving Candidates)
           ▼
 ┌────────────────────────────────────────┐
-│  Stage 2: AI Earnings Guidance (X1)    │
+│  Stage 2: AI Guidance Screen (X1)      │
 │  • OpenRouter LLM Classifier           │
-│  • Checks for AI demand / capex cuts   │
+│  • Negative exclusion transcript check │
 └────────────────────────────────────────┘
           │ (Validated Basket)
           ▼
@@ -76,8 +76,8 @@ The application implements the complete 4-stage institutional quantitative inves
 - **Rule T1 — 200-Day Trend Confirmation:** Requires closing price to be above the 200-day Simple Moving Average ($Price > SMA_{200}$), ensuring capital is only deployed into established long-term uptrends.
 - **Rule T2 — Short/Medium-Term Momentum:** Requires the MACD Histogram (12, 26, 9) to be strictly positive ($MACD_{hist} > 0$), confirming active accumulation.
 - **Rule T3 — Technical RSI Bounds:** Requires the 14-period Wilder RSI to remain between $[40, 70]$ (Standard Regime). If market pullbacks compress passing breadth below targets, the engine automatically engages **Fallback Regime 1** (expanding the RSI band to $[35, 75]$).
-- **Rule X1 — AI Guidance Check:** Calls OpenRouter LLMs to scan company earnings call transcripts and verify whether management reaffirmed strong AI capex demand.
-- **Borderline Detection:** Flags candidates within $\pm3\%$ of their 200-day moving average or $\pm3$ RSI points to highlight stocks vulnerable to immediate regime changes.
+- **Rule X1 — AI Guidance Screen:** an LLM reads the company's most recent earnings call text and excludes any name whose management states explicit negative forward guidance or demand warnings. Verdicts are pass, fail, or insufficient, and every fail must include a verbatim evidence quote from the text. Insufficient is treated as pass with a logged flag.
+- **Borderline detection:** a verdict is flagged borderline when the close is within ±2% of the 200-day SMA, the MACD histogram is within ±0.05% of price, or RSI is within 3 points of a band edge.
 
 ### 2. Minimum Variance Portfolio Optimization (Deliverable 2)
 - **Mathematical Quadratic Solver:** Constructs a 252-day log-return covariance matrix $\Sigma$ and solves the convex optimization problem:
@@ -98,7 +98,7 @@ Provides one-click downloads for compliance and quantitative audit records:
 - `screening_full.csv` (All 30 candidates with live price, indicator values, and pass/fail verdicts)
 - `weights.csv` (Optimized portfolio weights, single-asset caps, and volatility metrics)
 - `correlation_matrix.csv` (Full 30×30 candidate return correlation matrix)
-- `proposed10.csv` (Top portfolio positions formatted for execution)
+- `proposed10.csv` (ten representative exemplar names selected for documentation purposes; not the portfolio and not an execution list — the portfolio is all screen survivors, weighted by minimum variance).
 
 ---
 
@@ -125,6 +125,8 @@ Provides one-click downloads for compliance and quantitative audit records:
    ```bash
    npm run build
    ```
+
+The application is deployed to GitHub Pages via GitHub Actions on push to main.
 
 ---
 

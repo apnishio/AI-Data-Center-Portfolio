@@ -274,6 +274,7 @@ export default function App() {
         {/* Screening Regime Status Banner */}
         <StatusBanner
           asOfDate={asOfDate}
+          isLive={isLive}
           regime={regime}
           passCount={passCount}
           totalCount={screeningResults.length}
@@ -430,6 +431,7 @@ export default function App() {
             <>
               <UniverseTable
                 results={screeningResults}
+                isLive={isLive}
               />
 
               <TradingSignals
@@ -450,6 +452,7 @@ export default function App() {
           {activeTab === 'exemplars' && (
             <ExemplarProfiles
               screeningResults={screeningResults}
+              isLive={isLive}
             />
           )}
 
