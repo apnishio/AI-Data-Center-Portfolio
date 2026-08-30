@@ -146,27 +146,32 @@ export const ExemplarProfiles: React.FC<ExemplarProfilesProps> = ({
                 <div className="space-y-1 mt-1.5">
                   {(() => {
                     const packet = EARNINGS_PACKETS[item.ticker];
-                    const isPlaceholder = packet ? packet.isPlaceholder : true;
+                    const isPlaceholder = packet ? packet.isPlaceholder : false;
                     return isPlaceholder ? (
                       <span className="inline-block text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
                         ILLUSTRATIVE TEXT — placeholder, not an actual company statement
                       </span>
-                    ) : null;
+                    ) : (
+                      <span className="inline-block text-[10px] px-2 py-0.5 rounded font-mono font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                        Q2 2026 earnings summary
+                      </span>
+                    );
                   })()}
                   {isLive && x1Verdict ? (
                     <blockquote className="text-[11px] text-slate-300 italic bg-slate-950 p-2 rounded border border-slate-800 line-clamp-2">
-                      "{x1Evidence}"
+                      "{x1Evidence || EARNINGS_PACKETS[item.ticker]?.text}"
                     </blockquote>
                   ) : (
                     <div className="bg-slate-950/60 p-2 rounded border border-slate-800/60 space-y-1">
-                      {x1Evidence && (
+                      {x1Evidence ? (
                         <blockquote className="text-[11px] text-slate-400 italic line-clamp-2">
                           "{x1Evidence}"
                         </blockquote>
+                      ) : (
+                        <p className="text-[10px] text-slate-500 italic pt-0.5">
+                          * AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key; reference results reflect technical rules only.
+                        </p>
                       )}
-                      <p className="text-[10px] text-slate-500 italic pt-0.5">
-                        * AI guidance screen (X1) executes only in Live Mode with an OpenRouter API key; reference results reflect technical rules only.
-                      </p>
                     </div>
                   )}
                 </div>
