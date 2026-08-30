@@ -55,6 +55,9 @@ import {
 import { 
   CANDIDATE_UNIVERSE 
 } from './data/universe';
+import {
+  EARNINGS_PACKETS
+} from './data/earningsPackets';
 import { 
   REFERENCE_SCREENING_RESULTS,
   REFERENCE_PORTFOLIO_WEIGHTS,
@@ -153,6 +156,11 @@ export default function App() {
 
   // Run Live Screening Pipeline across Twelve Data & Optimizer
   const handleRunLiveScreening = async () => {
+    if (!twelveDataKey || twelveDataKey.trim() === '') {
+      alert('Twelve Data API key is required to run in Live Screener Mode. Please enter your Twelve Data key in Settings / Configure Live API.');
+      return;
+    }
+
     setIsFetching(true);
     setIsLive(true);
     const today = new Date().toISOString().split('T')[0];
@@ -164,8 +172,8 @@ export default function App() {
         setFetchProgress(progress);
       });
 
-      // 1. Run technical screening
-      const { results, regime: computedRegime } = runFullScreening(CANDIDATE_UNIVERSE, prices, today);
+      // 1. Run technical screening (with errors passed for ineligible candidates)
+      const { results, regime: computedRegime } = runFullScreening(CANDIDATE_UNIVERSE, prices, today, errors);
       let finalResults = results;
 
       // 1b. If OpenRouter key is provided, execute live X1 checks for eligible candidates
@@ -173,14 +181,14 @@ export default function App() {
         try {
           const updatedResults = await Promise.all(
             results.map(async (res) => {
-              const candidate = CANDIDATE_UNIVERSE.find(c => c.ticker === res.ticker);
-              if (candidate?.transcriptSample && res.eligible) {
+              const packet = EARNINGS_PACKETS[res.ticker];
+              if (packet?.text && res.eligible) {
                 try {
                   const x1Res = await runX1Classifier(
                     res.ticker,
                     res.company,
-                    candidate.callDate || today,
-                    candidate.transcriptSample,
+                    packet.callDate || today,
+                    packet.text,
                     openRouterKey,
                     selectedModel
                   );

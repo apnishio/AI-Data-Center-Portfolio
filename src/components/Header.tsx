@@ -59,6 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [showTwelveKey, setShowTwelveKey] = useState(false);
   const [showOpenRouterKey, setShowOpenRouterKey] = useState(false);
 
+  const hasTwelveKey = !!(twelveDataKey && twelveDataKey.trim().length > 0);
   const hasKeys = !!twelveDataKey || !!openRouterKey;
 
   return (
@@ -124,16 +125,15 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Run Live Screening Button */}
             <button
               onClick={() => {
-                if (!hasKeys) {
-                  setShowConfig(true);
-                } else {
+                if (hasTwelveKey) {
                   onRunScreening();
                 }
               }}
-              disabled={isFetching}
+              disabled={isFetching || !hasTwelveKey}
+              title={!hasTwelveKey ? 'Enter a Twelve Data API Key in Configure Live API to enable Live Screener Mode' : 'Run Live Market Screening across all 30 candidate tickers'}
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition-all ${
-                isFetching 
-                  ? 'bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-700' 
+                isFetching || !hasTwelveKey
+                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-750 opacity-60' 
                   : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/40 border border-emerald-400/30 active:scale-95'
               }`}
             >
@@ -145,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
               ) : (
                 <>
                   <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>{hasKeys ? 'Run Live Screen' : 'Run Live (Enter Keys)'}</span>
+                  <span>{hasTwelveKey ? 'Run Live Screen' : 'Run Live (Twelve Data Key Required)'}</span>
                 </>
               )}
             </button>

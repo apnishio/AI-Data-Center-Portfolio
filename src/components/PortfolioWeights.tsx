@@ -27,6 +27,10 @@ export const PortfolioWeights: React.FC<PortfolioWeightsProps> = ({
   clusterWeights
 }) => {
   const equalWeightPct = weights.length > 0 ? (100 / weights.length).toFixed(2) : '0.00';
+  const totalWeightSum = weights.reduce((sum, w) => sum + w.weight_pct, 0);
+  const totalWeightRatio = totalWeightSum / 100;
+  // Sanity check: portfolio weights must sum to 1 within 0.0002 tolerance (0.02%)
+  const isWeightSumViolated = weights.length > 0 && Math.abs(totalWeightRatio - 1.0) > 0.0002;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -34,6 +38,14 @@ export const PortfolioWeights: React.FC<PortfolioWeightsProps> = ({
       {/* 1. Optimized Weights Table & Bar Chart (2 Cols on lg) */}
       <div className="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
         <div>
+          {isWeightSumViolated && (
+            <div className="mb-4 p-3 rounded-lg bg-rose-950/40 border border-rose-500/50 text-rose-200 text-xs flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>
+                <strong>Runtime Sanity Warning:</strong> Portfolio weights sum to {(totalWeightSum).toFixed(4)}% (tolerance deviation exceeds ±0.02%).
+              </span>
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-800 gap-2">
             <div>
               <div className="flex items-center gap-2">

@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { ScreeningResult, ClusterName } from '../types';
 import { TermInfoButton } from './TermExplainer';
+import { CANDIDATE_UNIVERSE } from '../data/universe';
+import { EARNINGS_PACKETS } from '../data/earningsPackets';
 
 interface UniverseTableProps {
   results: ScreeningResult[];
@@ -446,6 +448,23 @@ export const UniverseTable: React.FC<UniverseTableProps> = ({
                 </span>
               </div>
 
+              {(() => {
+                const packet = EARNINGS_PACKETS[activeX1Modal.ticker];
+                return (
+                  <div className="space-y-1">
+                    <span className="font-semibold text-slate-300 block">Guidance Text:</span>
+                    {packet?.isPlaceholder && (
+                      <span className="inline-block text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        ILLUSTRATIVE TEXT — placeholder, not an actual company statement
+                      </span>
+                    )}
+                    <blockquote className="text-slate-300 italic bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed font-sans">
+                      "{packet?.text || activeX1Modal.x1_evidence || 'No text available'}"
+                    </blockquote>
+                  </div>
+                );
+              })()}
+
               <div>
                 <span className="font-semibold text-slate-300 block mb-1">Reasoning / Notes:</span>
                 <p className="text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed font-sans">
@@ -454,8 +473,11 @@ export const UniverseTable: React.FC<UniverseTableProps> = ({
               </div>
 
               {activeX1Modal.x1_evidence && (
-                <div>
-                  <span className="font-semibold text-rose-300 block mb-1">Verbatim Evidence Quote:</span>
+                <div className="space-y-1">
+                  <span className="font-semibold text-rose-300 block">Verbatim Evidence Quote:</span>
+                  <span className="inline-block text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    ILLUSTRATIVE TEXT — placeholder, not an actual company statement
+                  </span>
                   <blockquote className="italic text-rose-200 bg-rose-950/30 p-3 rounded-lg border border-rose-500/30">
                     "{activeX1Modal.x1_evidence}"
                   </blockquote>

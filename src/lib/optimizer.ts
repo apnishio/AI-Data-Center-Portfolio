@@ -311,6 +311,12 @@ export function optimizePortfolio(
 
   const riskReduction = eqVol > 0 ? ((1 - portVol / eqVol) * 100) : 0;
 
+  // Runtime sanity check: weights must sum to 1 within 0.0002 (0.02%)
+  const rawSumW = w.reduce((acc, val) => acc + val, 0);
+  if (Math.abs(rawSumW - 1.0) > 0.0002) {
+    console.warn(`[Optimizer Sanity Violation] Portfolio weights sum to ${rawSumW.toFixed(6)}, which deviates from 1.0 by more than 0.0002.`);
+  }
+
   // Format weights
   const weights: PortfolioWeight[] = survivors.map((s, idx) => {
     const weightPct = Number((w[idx] * 100).toFixed(2));

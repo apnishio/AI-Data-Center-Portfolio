@@ -130,10 +130,10 @@ export const AuditTrailModal: React.FC<AuditTrailModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-bold text-white">
-                Audit Trail & Quantitative Artifacts
+                Human Review Surface & Audit Trail
               </h2>
               <p className="text-xs text-slate-400">
-                Institutional Export Pipeline • As of {asOfDate}
+                Verifiable Decision Evidence & Quantitative Artifacts • As of {asOfDate}
               </p>
             </div>
           </div>

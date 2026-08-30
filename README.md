@@ -93,8 +93,8 @@ The application implements the complete 4-stage institutional quantitative inves
 - **Profiled Exemplar Case Studies:** Deep-dive cards detailing real market examples (e.g. Vertiv `VRT`, Constellation `CEG`, Lumentum `LITE`, NextEra `NEE`).
 - **Executive Commentary Generator:** Automated narrative summary combining screening outcomes, cluster rotations, and optimizer findings, with an option to generate live commentary via OpenRouter.
 
-### 4. Audit Trail & CSV Artifacts
-Provides one-click downloads for compliance and quantitative audit records:
+### 4. Human Review Surface & CSV Artifacts
+The audit trail and X1 evidence modals form the application's **human review surface**: every verdict is traceable to its inputs and every X1 fail to a verbatim quote, so a human can review the evidence before acting on the output. Provides one-click downloads for compliance and quantitative audit records:
 - `screening_full.csv` (All 30 candidates with live price, indicator values, and pass/fail verdicts)
 - `weights.csv` (Optimized portfolio weights, single-asset caps, and volatility metrics)
 - `correlation_matrix.csv` (Full 30×30 candidate return correlation matrix)

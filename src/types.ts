@@ -10,7 +10,7 @@ export interface UniverseCandidate {
   company: string;
   cluster: ClusterName;
   role: string;
-  transcriptSample?: string;
+  sampleGuidanceText?: string;
   callDate?: string;
 }
 

@@ -139,7 +139,8 @@ export function screenCandidate(
   candidate: UniverseCandidate, 
   priceBars: DailyPriceBar[],
   asOfDate: string,
-  regime: ScreeningRegime = 'standard'
+  regime: ScreeningRegime = 'standard',
+  errorMessage?: string
 ): ScreeningResult {
   if (!priceBars || priceBars.length < 210) {
     return {
@@ -161,7 +162,7 @@ export function screenCandidate(
       eligible: false,
       pass: false,
       overall_status: 'INELIGIBLE',
-      fail_reason: 'Insufficient price history (< 210 trading days)',
+      fail_reason: errorMessage || (priceBars ? `Insufficient price history (${priceBars.length} < 210 trading days)` : 'Price fetch failed: No market data returned'),
       as_of: asOfDate
     };
   }
@@ -235,17 +236,18 @@ export function screenCandidate(
 export function runFullScreening(
   candidates: UniverseCandidate[],
   priceMap: Record<string, DailyPriceBar[]>,
-  asOfDate: string
+  asOfDate: string,
+  errors?: Record<string, string>
 ): { results: ScreeningResult[]; regime: ScreeningRegime; passCount: number; borderlineCount: number } {
   // First pass: Standard regime
-  let results = candidates.map(c => screenCandidate(c, priceMap[c.ticker], asOfDate, 'standard'));
+  let results = candidates.map(c => screenCandidate(c, priceMap[c.ticker], asOfDate, 'standard', errors?.[c.ticker]));
   let passCount = results.filter(r => r.pass).length;
   let regime: ScreeningRegime = 'standard';
 
   // Fallback rule 1: If fewer than 15 names pass, relax T3 to RSI 35-75
   if (passCount < 15) {
     regime = 'relaxed_t3';
-    results = candidates.map(c => screenCandidate(c, priceMap[c.ticker], asOfDate, 'relaxed_t3'));
+    results = candidates.map(c => screenCandidate(c, priceMap[c.ticker], asOfDate, 'relaxed_t3', errors?.[c.ticker]));
     passCount = results.filter(r => r.pass).length;
     
     // Fallback rule 2: If still fewer than 15, flag below-target breadth

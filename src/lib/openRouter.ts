@@ -109,6 +109,7 @@ ${transcriptText}
 
 /**
  * Generates an Executive Commentary grounded strictly on the quantitative results
+ * using the COSTAR structured prompt framework.
  */
 export async function generateExecutiveCommentary(
   contextData: {
@@ -130,31 +131,38 @@ export async function generateExecutiveCommentary(
   apiKey: string,
   model: string = 'anthropic/claude-sonnet-5'
 ): Promise<string> {
-  const systemPrompt = `You are a Chief Investment Officer and quantitative portfolio strategist presenting the executive review of the Trend-Confirmed AI Datacenter Enablement Portfolio.
+  const systemPrompt = `You are a Chief Investment Officer and quantitative portfolio strategist presenting an executive commentary for an institutional investment committee.
 
-CONSTRAINTS:
-1. Write 3 concise, high-impact paragraphs:
-   - Paragraph 1: Screening Regime & Universe Attrition (discuss the active regime, pass rate, macro pullback context, and technical attrition).
-   - Paragraph 2: Cluster Distribution & Green Energy Tilt Reality (explain why Datacenter REITs and Optics dominate while Low-Carbon Power carries 0% weight due to technical breakdown vs pure narrative).
-   - Paragraph 3: Minimum Variance Risk Reduction vs Equal Weight (explain the volatility trade-off: 22% risk reduction, down-weighting hyper-volatile winners like LITE/AAOI/BE, and the 15% cap binding names).
-2. Use ONLY the verified quantitative numbers provided in the context. Do not invent external data.
-3. Maintain an objective, disciplined, institutional tone.`;
+# FRAMEWORK: COSTAR
+- CONTEXT: You are presenting the quarterly review of the Trend-Confirmed Physical AI Datacenter Enablement Portfolio. The portfolio runs a four-stage quantitative pipeline: technical trend & momentum screening (T1/T2/T3), fundamental X1 guidance screening, minimum-variance quadratic optimization with a 15% single-stock cap, and risk attribution.
+- OBJECTIVE: Deliver a concise, rigorous 3-paragraph executive commentary explaining the current portfolio state, cluster exposures, and risk-reduction mechanics.
+- STYLE: Institutional, disciplined, quantitative, and objective. Avoid promotional hype or generic SaaS buzzwords.
+- TONE: Professional, authoritative, and grounded strictly in the provided mathematical results.
+- AUDIENCE: Investment committee members, portfolio managers, and institutional allocators who understand quantitative equity concepts (e.g., minimum variance, covariance, 200-day SMA, Sharpe tradeoff).
+- RESPONSE FORMAT: Exactly 3 structured paragraphs:
+  * Paragraph 1 (Screening Regime & Universe Attrition): Detail the active screening regime, passing count out of candidate universe, technical failure drivers (e.g. 200-day SMA or MACD momentum breakdown during pullbacks), and borderline counts.
+  * Paragraph 2 (Cluster Allocations & Green Tilt Reality): Explain the resulting cluster distribution (noting dominance of Datacenter REITs/Thermal/Optics vs zero or low weight in low-carbon power generation due to technical failure vs clean energy narrative).
+  * Paragraph 3 (Minimum Variance Optimization & Risk Reduction): Detail the volatility reduction vs equal-weight benchmark, the down-weighting or zeroing of hyper-volatile survivors, and names reaching the 15% single-stock cap constraint.
 
-  const userPrompt = `Portfolio Quantitative Results as of ${contextData.asOfDate}:
+CRITICAL RULES:
+1. Cite and ground every statement strictly in the quantitative figures provided in the context. Never invent data or mention outside rumors.
+2. Maintain strict fidelity to the numbers: portfolio volatility, equal-weight volatility, risk reduction percentage, and cluster weights.`;
+
+  const userPrompt = `QUANTITATIVE PORTFOLIO DATA (As of ${contextData.asOfDate}):
 - Active Screening Regime: ${contextData.regime}
-- Universe Candidates: ${contextData.totalCount} | Passing Screen: ${contextData.survivorCount} | Borderline Verdicts: ${contextData.borderlineCount}
-- Portfolio Risk & Return:
-  * Minimum Variance Volatility: ${contextData.portVol.toFixed(1)}% (vs Equal Weight: ${contextData.eqVol.toFixed(1)}%)
-  * Realized Risk Reduction: ${contextData.riskReduction.toFixed(0)}%
-  * Descriptive Realized 12-Month Return: Min-Var ${contextData.portRet.toFixed(1)}% vs Equal Weight ${contextData.eqRet.toFixed(1)}%
-- Cluster Allocations:
+- Candidate Universe Breadth: ${contextData.survivorCount} passed out of ${contextData.totalCount} total candidates (${contextData.borderlineCount} borderline verdicts)
+- Risk & Return Profile:
+  * Minimum Variance Portfolio Volatility: ${contextData.portVol.toFixed(1)}% (vs Equal-Weight Benchmark: ${contextData.eqVol.toFixed(1)}%)
+  * Realized Volatility Reduction: ${contextData.riskReduction.toFixed(0)}%
+  * Realized 12-Month Return: Min-Var ${contextData.portRet.toFixed(1)}% vs Equal-Weight ${contextData.eqRet.toFixed(1)}%
+- Cluster Allocation Summary:
 ${contextData.clusterAllocations.map(c => `  * ${c.cluster}: ${c.weight.toFixed(1)}%`).join('\n')}
-- Top Holdings:
+- Top Allocated Holdings:
 ${contextData.topHoldings.map(h => `  * ${h.ticker} (${h.company}): Weight ${h.weight.toFixed(2)}% | Ann Vol ${h.vol.toFixed(1)}% | 12m Ret ${h.ret.toFixed(1)}%`).join('\n')}
-- Names at 15% Max Binding Cap: ${contextData.bindingCapHoldings.join(', ')}
-- Zero-Weight Screen Survivors: ${contextData.zeroWeightSurvivors.join(', ')}
+- 15.00% Capped Holdings: ${contextData.bindingCapHoldings.length > 0 ? contextData.bindingCapHoldings.join(', ') : 'None'}
+- Zero-Weight Survivors: ${contextData.zeroWeightSurvivors.length > 0 ? contextData.zeroWeightSurvivors.join(', ') : 'None'}
 
-Please provide the executive commentary report.`;
+Please construct the 3-paragraph executive commentary adhering strictly to the COSTAR framework.`;
 
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
